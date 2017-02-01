@@ -5,8 +5,9 @@ var current,chase;
 var xball=0,yball=0;
 var xenem,yenem,dx,dy,length;
 var start_angle , end_angle;
+var delx=0, dely=0;
 
-
+var direction = 0; 
 var stack=[];
 
 var img,img1,mySound;
@@ -17,13 +18,14 @@ function preload()
 }
 
 function keyPressed() {
-	
+		
 	if(keyCode=== RIGHT_ARROW)
 	{
+		direction = 2;
 	   start_angle =  QUARTER_PI;
 	   end_angle =  TWO_PI-QUARTER_PI;
-		if(!current.walls[1])
-		xball=xball+1;
+		// if(!current.walls[1])
+		// xball=xball+1;
 		if(xball>width-30)
 			xball=width-30;
 	}
@@ -31,11 +33,12 @@ function keyPressed() {
 	if(keyCode=== LEFT_ARROW)
 	{
 	   // fill(0,255,255);
-	   start_angle =  PI-QUARTER_PI;
-	   end_angle =  PI+QUARTER_PI;
+	   direction = 4;
+	   start_angle =  PI+QUARTER_PI;
+	   end_angle =  PI-QUARTER_PI;
 	   // arc(xball*w+15,yball*w+15,30,30,PI-QUARTER_PI,PI+QUARTER_PI);
-		if(!current.walls[3])
-		xball=xball-1;
+		// if(!current.walls[3])
+		// xball=xball-1;
 		if(xball<0)
 			xball=0;
 	}
@@ -43,11 +46,12 @@ function keyPressed() {
 	if(keyCode=== UP_ARROW)
 	{
 		// fill(0,255,255);
-	   start_angle =  PI+QUARTER_PI;
-	   end_angle =  PI-QUARTER_PI;
+		direction = 1;
+	   end_angle =  PI+QUARTER_PI;
+	   start_angle =  TWO_PI-QUARTER_PI;
 	   // arc(xball*w+15,yball*w+15,30,30,PI+QUARTER_PI,TWO_PI-QUARTER_PI);
-		if(!current.walls[0])
-		yball=yball-1;
+		// if(!current.walls[0])
+		// yball=yball-1;
 		if(yball<0)
 			yball=0;
 		
@@ -56,11 +60,12 @@ function keyPressed() {
 	if(keyCode=== DOWN_ARROW)
 	{
 		// fill(0,255,255);
+		direction = 3;
 		start_angle =  PI-QUARTER_PI;
-	   end_angle =  QUARTER_PI;
+	    end_angle =  QUARTER_PI;
 	   // arc(xball*w+15,yball*w+15,30,30,PI-QUARTER_PI,QUARTER_PI);
-		if(!current.walls[2])
-		yball=yball+1;
+		// if(!current.walls[2])
+		// yball=yball+1;
 		if(yball>height-30)
 			yball=height-30;
 		
@@ -71,7 +76,7 @@ function keyPressed() {
 }
 
 function setup() {
-	var cnv=createCanvas(450,450);
+	var cnv=createCanvas(240,240);
 	var x=(windowWidth-width)/2;
 	var y=(windowHeight-height)/2;
 	cnv.position(x,y);
@@ -79,7 +84,7 @@ function setup() {
 	rows=floor(height/w);
 	start_angle = QUARTER_PI;
 	end_angle = TWO_PI-QUARTER_PI;
-	//frameRate(5);
+	frameRate(10);
 	//console.log(x,y,cols,rows);
 	mySound.setVolume(0.1);
 	  mySound.play();
@@ -93,8 +98,8 @@ function setup() {
 
 	   
 	current=grid[0];
-	xenem=floor(random(0,cols));
-	yenem=floor(random(0,rows));
+	xenem=floor(random(0,cols))*w;
+	yenem=floor(random(0,rows))*w;
 	
 	
 	
@@ -104,9 +109,6 @@ function draw() {
 
 	background(51);
 
-	mySound.setVolume(0.1);
-	  mySound.play();
-
 
 	for(var i=0;i<grid.length;i++)
 	{
@@ -115,6 +117,7 @@ function draw() {
   
    current.visited=true;
  // current.highlight();
+
    //Step 1
    var next=current.checkNeighbours();
    if(next)
@@ -135,31 +138,46 @@ function draw() {
    }
    else if(stack.length==0){
 
-   		// image(img1,xenem,yenem);
+   		if(xball==floor(xenem) && yball==floor(yenem)){
+   			textSize(20);
+   			textAlign(CENTER);
+		text("Game Over", 100,100,150,100);
+		noLoop();
+	}	
+   		if(direction == 1 && !current.walls[0]){
+   			--yball;
+   			// yball = map(--yball,0,height,0,height/10);
+   		}
+   		else if(direction == 2 && !current.walls[1]){
+   			++xball;
+   		}
+   		else if(direction == 3 && !current.walls[2]){
+   			++yball;
+   		}
+   		else if(direction == 4 && !current.walls[3]){
+   			--xball;
+   		}
+
    		fill(255,0,0);
    		ellipse(xenem+15,yenem+15,30,30);
    		current=grid[index(xball,yball)];
    		chase=grid[index(xenem,yenem)];
 
-	   // image(img,xball*w,yball*w);
 	   fill(0,255,255);	
 	   arc(xball*w+15,yball*w+15,30,30,start_angle,end_angle);
 
-	   dx=xball*w-xenem;
+	   		dx=xball*w-xenem;
 	   dy=yball*w-yenem;
-	   // console.log(dx);
-	   // console.log(dy);
 
 	   length=sqrt(dx*dx+dy*dy);
-	   // console.log(length);
 	   if(length)
 	   {
 	   	dx/=length;
 	   	dy/=length;
 	   }
 
-	   xenem+=(dx*0.5*0.5);
-	   yenem+=(dy*1*1);
+	   xenem+=(dx*10*0.9);
+	   yenem+=(dy*10);
 
 	   if(xenem>width-30)
 	   	xenem=width-30;
