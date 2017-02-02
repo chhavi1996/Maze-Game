@@ -1,9 +1,6 @@
 var rows,cols;
-<<<<<<< HEAD
 var w=40;
-=======
-var w=50;
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
+
 var grid=[];
 var current,chase,chase1;
 var xball=0,yball=0;
@@ -73,11 +70,8 @@ function keyPressed() {
 }
 
 function setup() {
-<<<<<<< HEAD
 	var cnv=createCanvas(640,640);
-=======
-	var cnv=createCanvas(650,650);
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
+
 	var x=(windowWidth-width)/2;
 	var y=(windowHeight-height)/2;
 	cnv.position(x,y);
@@ -96,11 +90,8 @@ function setup() {
 			grid.push(cell);
 		}
 
-<<<<<<< HEAD
 		for(var k=0;k<8;k++)
-=======
-		for(var k=0;k<6;k++)
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
+
    		{
    			xenem=floor(random(0,cols));
 			yenem=floor(random(0,rows));
@@ -109,28 +100,11 @@ function setup() {
    		}
 	   
 	current=grid[0];
-<<<<<<< HEAD
-=======
-	
-	xenem1=floor(random(0,cols));
-	yenem1=floor(random(0,rows));
-	//chase=grid[index(xenem,yenem)];
-	
-	
-	
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 }
 
 function draw() {
 
 	background(51);
-<<<<<<< HEAD
-
-	
-=======
-	  
-
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 	for(var i=0;i<grid.length;i++)
 	{
 		
@@ -139,12 +113,7 @@ function draw() {
 
   
    current.visited=true;
-<<<<<<< HEAD
-  // chase.highlight();
-=======
 
- // current.highlight();
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 
    //Step 1
    var next=current.checkNeighbours();
@@ -169,11 +138,8 @@ function draw() {
    else if(stack.length==0){
 
    		
-<<<<<<< HEAD
 		frameRate(2);
-=======
-		frameRate(5);
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
+
    		if(direction == 1 && !current.walls[0]){
    			--yball;
    		}
@@ -243,66 +209,7 @@ function Monster(i,j)
 
 	   if(this.j>height-w)
 	   		this.j=height-w;
-=======
-   		// fill(255,0,0);
-   		 current=grid[index(xball,yball)];
-   		// chase=grid[index(xenem,yenem)];
 
-		   fill(0,255,255);	
-		   arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
-
-		   for(var i=0;i<6;i++)
-		   	devil[i].show();
-	  	
-
-
-
-   }
-}
-
-function Monster(i,j)
-{
-	this.i=i;
-	this.j=j;
-	
-
-	this.show=function(){
-
-		if(xball==this.i && yball==this.j){
-   			start_angle=TWO_PI;
-   			end_angle=TWO_PI;
-		text("Game Over", 100,100,150,100);
-		noLoop();
-	}	
-
-		var chase=grid[index(this.i,this.j)];
-
-		fill(0,255,0);
-		ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
-
-		var r1=floor(random(0,4));
-	   
-	   	 if(r1==0 && !chase.walls[0])
-	   		this.j-=1;
-	   	 if(r1==1 && !chase.walls[1])
-	   		this.i+=1;
-	   	 if(r1==2 && !chase.walls[2])
-	   		this.j+=1;
-	   	 if(r1==3 && !chase.walls[3])
-	   		this.i-=1;
-
-	   	if(this.i>width-w)
-	   	this.i=width-w;
-
-	   if(this.i<0)
-	   	this.i=0;
-
-	   if(this.j>height-w)
-	   		this.j=height-w;
-
-	   	if(this.j<0)
-	   		this.j=0;
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 
 	   	if(this.j<0)
 	   		this.j=0;
@@ -379,7 +286,6 @@ function Cell(i,j) {
 	{
 		var x=this.i*w;
 		var y=this.j*w;
-<<<<<<< HEAD
 		stroke(0);
 		fill(0,0,255);
 
@@ -401,40 +307,17 @@ function Cell(i,j) {
 		if(this.walls[3]){
 		
 		rect(x,y,5,w);
-=======
-		// stroke(0,160,255);
-		fill(0);
-		if(this.walls[0]){
-			rect(x,y,w,5);
-		}
-
-		if(this.walls[1]){
-			rect(x+w,y,5,w);
-		}
-
-		if(this.walls[2]){
-			rect(x,y+w,w,5);
-		}
-
-		if(this.walls[3]){
-			rect(x,y,5,w);
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 		}
 		
 	
 		if(this.visited){
 			noStroke();
-<<<<<<< HEAD
 		fill(0,0,0,145);
 
 		rect(x,y,w,w);
 		stroke(255);
 		ellipse(this.i*w+w/2,this.j*w+w/2,2,2);
 		
-=======
-			fill(0,100,0,100);
-			rect(x,y,w,w);
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 		}
 	}
 }
@@ -443,18 +326,9 @@ function Cell(i,j) {
 function removeWalls(a,b)
 {
 	var x=a.i-b.i;
-<<<<<<< HEAD
 	var top=grid[index(a.i,a.j-1)];
 	var left=grid[index(a.i-1,a.j)];
 
-=======
-    grid[0].walls[1]=false;
-    grid[0].walls[2]=false;
-	console.log("xa = "+b.i);
-	console.log(" xb = "+a.i);
-	noStroke();
-	fill(0,255,0);
->>>>>>> 09b3c8669d0157304417b1e3a88b13aa734e2a25
 	if(x===1)
 	{
 		a.walls[3]=false;
@@ -470,8 +344,7 @@ function removeWalls(a,b)
 	}
 
 	var y=a.j-b.j;
-	console.log("ya "+a.j);
-	console.log("yb = "+b.j);
+	
 	if(y===1)
 	{
 		a.walls[0]=false;
