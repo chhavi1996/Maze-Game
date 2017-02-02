@@ -1,19 +1,19 @@
 var rows,cols;
-var w=30;
+var w=50;
 var grid=[];
-var current,chase;
+var current,chase,chase1;
 var xball=0,yball=0;
-var xenem,yenem,dx,dy,length;
+var xenem,yenem,xenem1,xenem2;
 var start_angle , end_angle;
-var delx=0, dely=0;
+var devil=[];
 
 var direction = 0; 
 var stack=[];
 
-var img,img1,mySound;
+var mySound;
 function preload()
 {
-	mySound=loadSound('Sketchup animation PACMAN 3D.mp3');
+	mySound=loadSound('PACMAN.mp3');
 	  
 }
 
@@ -26,8 +26,8 @@ function keyPressed() {
 	   end_angle =  TWO_PI-QUARTER_PI;
 		// if(!current.walls[1])
 		// xball=xball+1;
-		if(xball>width-30)
-			xball=width-30;
+		if(xball>width-w)
+			xball=width-w;
 	}
 
 	if(keyCode=== LEFT_ARROW)
@@ -66,8 +66,8 @@ function keyPressed() {
 	   // arc(xball*w+15,yball*w+15,30,30,PI-QUARTER_PI,QUARTER_PI);
 		// if(!current.walls[2])
 		// yball=yball+1;
-		if(yball>height-30)
-			yball=height-30;
+		if(yball>height-w)
+			yball=height-w;
 		
 	}
 
@@ -76,7 +76,7 @@ function keyPressed() {
 }
 
 function setup() {
-	var cnv=createCanvas(240,240);
+	var cnv=createCanvas(650,650);
 	var x=(windowWidth-width)/2;
 	var y=(windowHeight-height)/2;
 	cnv.position(x,y);
@@ -84,7 +84,7 @@ function setup() {
 	rows=floor(height/w);
 	start_angle = QUARTER_PI;
 	end_angle = TWO_PI-QUARTER_PI;
-	frameRate(10);
+	
 	//console.log(x,y,cols,rows);
 	mySound.setVolume(0.1);
 	  mySound.play();
@@ -95,11 +95,19 @@ function setup() {
 			grid.push(cell);
 		}
 
-
+		for(var k=0;k<6;k++)
+   		{
+   			xenem=floor(random(0,cols));
+			yenem=floor(random(0,rows));
+   			var mon=new Monster(xenem,yenem);
+   			devil.push(mon);
+   		}
 	   
 	current=grid[0];
-	xenem=floor(random(0,cols))*w;
-	yenem=floor(random(0,rows))*w;
+	
+	xenem1=floor(random(0,cols));
+	yenem1=floor(random(0,rows));
+	//chase=grid[index(xenem,yenem)];
 	
 	
 	
@@ -108,14 +116,16 @@ function setup() {
 function draw() {
 
 	background(51);
-
+	  
 
 	for(var i=0;i<grid.length;i++)
 	{
+		
 		grid[i].show();
 	}
   
    current.visited=true;
+
  // current.highlight();
 
    //Step 1
@@ -138,12 +148,8 @@ function draw() {
    }
    else if(stack.length==0){
 
-   		if(xball==floor(xenem) && yball==floor(yenem)){
-   			textSize(20);
-   			textAlign(CENTER);
-		text("Game Over", 100,100,150,100);
-		noLoop();
-	}	
+   		
+		frameRate(5);
    		if(direction == 1 && !current.walls[0]){
    			--yball;
    			// yball = map(--yball,0,height,0,height/10);
@@ -158,42 +164,70 @@ function draw() {
    			--xball;
    		}
 
-   		fill(255,0,0);
-   		ellipse(xenem+15,yenem+15,30,30);
-   		current=grid[index(xball,yball)];
-   		chase=grid[index(xenem,yenem)];
+   		
+   		// fill(255,0,0);
+   		 current=grid[index(xball,yball)];
+   		// chase=grid[index(xenem,yenem)];
+   		// ellipse(xenem*w+15,yenem*w+15,30,30);
 
-	   fill(0,255,255);	
-	   arc(xball*w+15,yball*w+15,30,30,start_angle,end_angle);
+		   fill(0,255,255);	
+		   arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
 
-	   		dx=xball*w-xenem;
-	   dy=yball*w-yenem;
+		   for(var i=0;i<6;i++)
+		   	devil[i].show();
+	  	
 
-	   length=sqrt(dx*dx+dy*dy);
-	   if(length)
-	   {
-	   	dx/=length;
-	   	dy/=length;
-	   }
 
-	   xenem+=(dx*10*0.9);
-	   yenem+=(dy*10);
-
-	   if(xenem>width-30)
-	   	xenem=width-30;
-
-	   if(xenem<0)
-	   	xenem=0;
-
-	   if(yenem>height-30)
-	   		yenem=height-30;
-
-	   	if(yenem<0)
-	   		yenem=0;
 
    }
+}
+
+function Monster(i,j)
+{
+	this.i=i;
+	this.j=j;
+	
+
+	this.show=function(){
+
+		if(xball==this.i && yball==this.j){
+   			start_angle=TWO_PI;
+   			end_angle=TWO_PI;
+		text("Game Over", 100,100,150,100);
+		noLoop();
+	}	
+
+		var chase=grid[index(this.i,this.j)];
+
+		fill(0,255,0);
+		ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
+
+		var r1=floor(random(0,4));
+	   
+	   	 if(r1==0 && !chase.walls[0])
+	   		this.j-=1;
+	   	 if(r1==1 && !chase.walls[1])
+	   		this.i+=1;
+	   	 if(r1==2 && !chase.walls[2])
+	   		this.j+=1;
+	   	 if(r1==3 && !chase.walls[3])
+	   		this.i-=1;
+
+	   	if(this.i>width-w)
+	   	this.i=width-w;
+
+	   if(this.i<0)
+	   	this.i=0;
+
+	   if(this.j>height-w)
+	   		this.j=height-w;
+
+	   	if(this.j<0)
+	   		this.j=0;
 
 
+
+	}
 
 
 }
@@ -219,7 +253,7 @@ function Cell(i,j) {
 		var y=this.j*w;
 
 		noStroke();
-		fill(0,355,0,100);
+		fill(0,255,0);
 		rect(x,y,w,w);
 	}
 
@@ -260,33 +294,33 @@ function Cell(i,j) {
 	{
 		var x=this.i*w;
 		var y=this.j*w;
-		stroke(0,160,355);
-
+		// stroke(0,160,255);
+		fill(0);
 		if(this.walls[0]){
-		line(x,y,x+w,y);
+		// line(x,y,x+w,y);
+		rect(x,y,w,5);
 		}
 
 		if(this.walls[1]){
-		line(x+w,y,x+w,y+w);
+		//line(x+w,y,x+w,y+w);
+		rect(x+w,y,5,w);
 		}
 
 		if(this.walls[2]){
-		line(x+w,y+w,x,y+w);
+		// line(x+w,y+w,x,y+w);
+		rect(x,y+w,w,5);
 		}
 
 		if(this.walls[3]){
-		line(x,y+w,x,y);
+		// line(x,y+w,x,y);
+		rect(x,y,5,w);
 		}
 
 	
 		if(this.visited){
 			noStroke();
-		fill(0,0,0,150);
-
+		fill(0,100,0,100);
 		rect(x,y,w,w);
-		
-
-		
 		}
 	}
 }
@@ -295,19 +329,26 @@ function Cell(i,j) {
 function removeWalls(a,b)
 {
 	var x=a.i-b.i;
-
+    grid[0].walls[1]=false;
+    grid[0].walls[2]=false;
+	console.log("xa = "+b.i);
+	console.log(" xb = "+a.i);
+	noStroke();
+	fill(0,255,0);
 	if(x===1)
 	{
+		// rect(x,y,w,w);
 		a.walls[3]=false;
 		b.walls[1]=false;
 	}
-	else if(x===-1)
-	{
+	else if(x===-1)	{
 		a.walls[1]=false;
 		b.walls[3]=false;
 	}
 
 	var y=a.j-b.j;
+	console.log("ya "+a.j);
+	console.log("yb = "+b.j);
 	if(y===1)
 	{
 		a.walls[0]=false;
