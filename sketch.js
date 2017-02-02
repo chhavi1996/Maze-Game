@@ -24,8 +24,7 @@ function keyPressed() {
 		direction = 2;
 	   start_angle =  QUARTER_PI;
 	   end_angle =  TWO_PI-QUARTER_PI;
-		// if(!current.walls[1])
-		// xball=xball+1;
+
 		if(xball>width-w)
 			xball=width-w;
 	}
@@ -36,9 +35,7 @@ function keyPressed() {
 	   direction = 4;
 	   start_angle =  PI+QUARTER_PI;
 	   end_angle =  PI-QUARTER_PI;
-	   // arc(xball*w+15,yball*w+15,30,30,PI-QUARTER_PI,PI+QUARTER_PI);
-		// if(!current.walls[3])
-		// xball=xball-1;
+
 		if(xball<0)
 			xball=0;
 	}
@@ -49,9 +46,7 @@ function keyPressed() {
 		direction = 1;
 	   end_angle =  PI+QUARTER_PI;
 	   start_angle =  TWO_PI-QUARTER_PI;
-	   // arc(xball*w+15,yball*w+15,30,30,PI+QUARTER_PI,TWO_PI-QUARTER_PI);
-		// if(!current.walls[0])
-		// yball=yball-1;
+
 		if(yball<0)
 			yball=0;
 		
@@ -63,9 +58,7 @@ function keyPressed() {
 		direction = 3;
 		start_angle =  PI-QUARTER_PI;
 	    end_angle =  QUARTER_PI;
-	   // arc(xball*w+15,yball*w+15,30,30,PI-QUARTER_PI,QUARTER_PI);
-		// if(!current.walls[2])
-		// yball=yball+1;
+
 		if(yball>height-w)
 			yball=height-w;
 		
@@ -168,7 +161,6 @@ function draw() {
    		// fill(255,0,0);
    		 current=grid[index(xball,yball)];
    		// chase=grid[index(xenem,yenem)];
-   		// ellipse(xenem*w+15,yenem*w+15,30,30);
 
 		   fill(0,255,255);	
 		   arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
@@ -297,30 +289,26 @@ function Cell(i,j) {
 		// stroke(0,160,255);
 		fill(0);
 		if(this.walls[0]){
-		// line(x,y,x+w,y);
-		rect(x,y,w,5);
+			rect(x,y,w,5);
 		}
 
 		if(this.walls[1]){
-		//line(x+w,y,x+w,y+w);
-		rect(x+w,y,5,w);
+			rect(x+w,y,5,w);
 		}
 
 		if(this.walls[2]){
-		// line(x+w,y+w,x,y+w);
-		rect(x,y+w,w,5);
+			rect(x,y+w,w,5);
 		}
 
 		if(this.walls[3]){
-		// line(x,y+w,x,y);
-		rect(x,y,5,w);
+			rect(x,y,5,w);
 		}
 
 	
 		if(this.visited){
 			noStroke();
-		fill(0,100,0,100);
-		rect(x,y,w,w);
+			fill(0,100,0,100);
+			rect(x,y,w,w);
 		}
 	}
 }
@@ -337,7 +325,6 @@ function removeWalls(a,b)
 	fill(0,255,0);
 	if(x===1)
 	{
-		// rect(x,y,w,w);
 		a.walls[3]=false;
 		b.walls[1]=false;
 	}
