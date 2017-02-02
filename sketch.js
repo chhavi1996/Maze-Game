@@ -154,7 +154,7 @@ function draw() {
    		}
 
    		
-<<<<<<< HEAD
+
    		
    		 current=grid[index(xball,yball)];
 
@@ -218,7 +218,7 @@ function Monster(i,j)
 	}
 
 
-	}
+	
 
 
 }
