@@ -1,16 +1,16 @@
 var rows,cols;
-var w=30;
+var w=40;
 var grid=[];
-var current,chase;
+var current,chase,chase1;
 var xball=0,yball=0;
-var xenem,yenem,dx,dy,length;
+var xenem,yenem,xenem1,xenem2;
 var start_angle , end_angle;
-var delx=0, dely=0;
+var devil=[];
 
 var direction = 0; 
 var stack=[];
 
-var img,img1,mySound;
+var mySound;
 function preload()
 {
 	mySound=loadSound('Sketchup animation PACMAN 3D.mp3');
@@ -76,7 +76,7 @@ function keyPressed() {
 }
 
 function setup() {
-	var cnv=createCanvas(240,240);
+	var cnv=createCanvas(640,640);
 	var x=(windowWidth-width)/2;
 	var y=(windowHeight-height)/2;
 	cnv.position(x,y);
@@ -84,7 +84,7 @@ function setup() {
 	rows=floor(height/w);
 	start_angle = QUARTER_PI;
 	end_angle = TWO_PI-QUARTER_PI;
-	frameRate(10);
+	
 	//console.log(x,y,cols,rows);
 	mySound.setVolume(0.1);
 	  mySound.play();
@@ -95,35 +95,39 @@ function setup() {
 			grid.push(cell);
 		}
 
-
+		for(var k=0;k<8;k++)
+   		{
+   			xenem=floor(random(0,cols));
+			yenem=floor(random(0,rows));
+   			var mon=new Monster(xenem,yenem);
+   			devil.push(mon);
+   		}
 	   
 	current=grid[0];
-	xenem=floor(random(0,cols))*w;
-	yenem=floor(random(0,rows))*w;
-	
-	
-	
 }
 
 function draw() {
 
 	background(51);
 
-
+	
 	for(var i=0;i<grid.length;i++)
 	{
 		grid[i].show();
 	}
+
   
    current.visited=true;
- // current.highlight();
+  // chase.highlight();
 
    //Step 1
    var next=current.checkNeighbours();
    if(next)
    {
-   		next.visited=true;
 
+   		next.visited=true;
+   		stroke(255);
+   		
    		//Step 3
    		stack.push(current);
    		//Step 3
@@ -138,15 +142,10 @@ function draw() {
    }
    else if(stack.length==0){
 
-   		if(xball==floor(xenem) && yball==floor(yenem)){
-   			textSize(20);
-   			textAlign(CENTER);
-		text("Game Over", 100,100,150,100);
-		noLoop();
-	}	
+   		
+		frameRate(2);
    		if(direction == 1 && !current.walls[0]){
    			--yball;
-   			// yball = map(--yball,0,height,0,height/10);
    		}
    		else if(direction == 2 && !current.walls[1]){
    			++xball;
@@ -158,42 +157,68 @@ function draw() {
    			--xball;
    		}
 
-   		fill(255,0,0);
-   		ellipse(xenem+15,yenem+15,30,30);
-   		current=grid[index(xball,yball)];
-   		chase=grid[index(xenem,yenem)];
+   		
+   		
+   		 current=grid[index(xball,yball)];
 
-	   fill(0,255,255);	
-	   arc(xball*w+15,yball*w+15,30,30,start_angle,end_angle);
+		   fill(0,255,255);	
+		   arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
 
-	   		dx=xball*w-xenem;
-	   dy=yball*w-yenem;
-
-	   length=sqrt(dx*dx+dy*dy);
-	   if(length)
-	   {
-	   	dx/=length;
-	   	dy/=length;
-	   }
-
-	   xenem+=(dx*10*0.9);
-	   yenem+=(dy*10);
-
-	   if(xenem>width-30)
-	   	xenem=width-30;
-
-	   if(xenem<0)
-	   	xenem=0;
-
-	   if(yenem>height-30)
-	   		yenem=height-30;
-
-	   	if(yenem<0)
-	   		yenem=0;
+		   for(var i=0;i<8;i++)
+		   	devil[i].show();
+	  	
 
    }
+}
+
+function Monster(i,j)
+{
+	this.i=i;
+	this.j=j;
+	
+
+	this.show=function(){
+
+		if(xball==this.i && yball==this.j){
+   			textSize(20);
+   			textAlign(CENTER);
+   			start_angle=TWO_PI;
+   			end_angle=TWO_PI;
+			text("Game Over", 100,100,150,100);
+			noLoop();
+	}	
+
+		var chase=grid[index(this.i,this.j)];
+
+		fill(0,255,0);
+		ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
+
+		var r1=floor(random(0,4));
+	   
+	   	 if(r1==0 && !chase.walls[0])
+	   		this.j-=1;
+	   	 if(r1==1 && !chase.walls[1])
+	   		this.i+=1;
+	   	 if(r1==2 && !chase.walls[2])
+	   		this.j+=1;
+	   	 if(r1==3 && !chase.walls[3])
+	   		this.i-=1;
+
+	   	if(this.i>width-w)
+	   	this.i=width-w;
+
+	   if(this.i<0)
+	   	this.i=0;
+
+	   if(this.j>height-w)
+	   		this.j=height-w;
+
+	   	if(this.j<0)
+	   		this.j=0;
 
 
+
+	}
 
 
 }
@@ -212,6 +237,7 @@ function Cell(i,j) {
 	
 	this.walls=[true,true,true,true];
 	this.visited=false;
+	
 
 	this.highlight=function()
 	{
@@ -260,32 +286,37 @@ function Cell(i,j) {
 	{
 		var x=this.i*w;
 		var y=this.j*w;
-		stroke(0,160,355);
+		stroke(0);
+		fill(0,0,255);
 
 		if(this.walls[0]){
-		line(x,y,x+w,y);
+		
+		rect(x,y,w,5);
 		}
 
 		if(this.walls[1]){
-		line(x+w,y,x+w,y+w);
+		
+		rect(x+w,y,5,w);
 		}
 
 		if(this.walls[2]){
-		line(x+w,y+w,x,y+w);
+		
+		rect(x,y+w,w,5);
 		}
 
 		if(this.walls[3]){
-		line(x,y+w,x,y);
+		
+		rect(x,y,5,w);
 		}
-
+		
 	
 		if(this.visited){
 			noStroke();
-		fill(0,0,0,150);
+		fill(0,0,0,145);
 
 		rect(x,y,w,w);
-		
-
+		stroke(255);
+		ellipse(this.i*w+w/2,this.j*w+w/2,2,2);
 		
 		}
 	}
@@ -295,16 +326,22 @@ function Cell(i,j) {
 function removeWalls(a,b)
 {
 	var x=a.i-b.i;
+	var top=grid[index(a.i,a.j-1)];
+	var left=grid[index(a.i-1,a.j)];
 
 	if(x===1)
 	{
 		a.walls[3]=false;
 		b.walls[1]=false;
+		
 	}
 	else if(x===-1)
 	{
 		a.walls[1]=false;
 		b.walls[3]=false;
+		a.walls[0]=false;
+		if(top)
+		top.walls[2]=false;
 	}
 
 	var y=a.j-b.j;
@@ -317,6 +354,9 @@ function removeWalls(a,b)
 	{
 		a.walls[2]=false;
 		b.walls[0]=false;
+		a.walls[3]=false;
+		if(left)
+		left.walls[1]=false;
 	}
 
 	
