@@ -1,6 +1,6 @@
 var rows,cols;
 var w=56;
-var pacman,pacmanImg;
+var pacman,pacmanImg,redImg,yellowImg,pinkImg,greenImg,blueImg;
 var grid=[];
 var current,chase,chase1;
 var xball=0,yball=0;
@@ -16,6 +16,11 @@ function preload()
 {
 	mySound=loadSound('PACMAN.mp3');
 	pacmanImg=loadImage('mario.png');
+	redImg=loadImage('red.png');
+	yellowImg=loadImage('yellow.png');
+	pinkImg=loadImage('pink.png');
+	blueImg=loadImage('blue.png');
+	greenImg=loadImage('green.png');
 	  
 }
 
@@ -24,9 +29,6 @@ function keyPressed() {
 	if(keyCode=== RIGHT_ARROW)
 	{
 		direction = 2;
-		
-	   start_angle =  QUARTER_PI;
-	   end_angle =  TWO_PI-QUARTER_PI;
 
 		if(xball>width-w)
 			xball=width-w;
@@ -36,9 +38,6 @@ function keyPressed() {
 	{
 	   
 	   direction = 4;
-	   
-	   start_angle =  PI+QUARTER_PI;
-	   end_angle =  PI-QUARTER_PI;
 
 		if(xball<0)
 			xball=0;
@@ -49,9 +48,6 @@ function keyPressed() {
 		
 		direction = 1;
 		
-	   end_angle =  PI+QUARTER_PI;
-	   start_angle =  TWO_PI-QUARTER_PI;
-
 		if(yball<0)
 			yball=0;
 		
@@ -61,9 +57,6 @@ function keyPressed() {
 	{
 		
 		direction = 3;
-		
-		start_angle =  PI-QUARTER_PI;
-	    end_angle =  QUARTER_PI;
 
 		if(yball>height-w)
 			yball=height-w;
@@ -82,8 +75,6 @@ function setup() {
 	cnv.position(x,y);
 	cols=floor(width/w);
 	rows=floor(height/w);
-	start_angle = QUARTER_PI;
-	end_angle = TWO_PI-QUARTER_PI;
 	
 	mySound.setVolume(0.1);
 	  mySound.play();
@@ -94,15 +85,26 @@ function setup() {
 			grid.push(cell);
 		}
 
-		for(var k=0;k<8;k++)
+		// for(var k=0;k<8;k++)
 
-   		{
+  //  		{
    			xenem=floor(random(0,cols));
 			yenem=floor(random(0,rows));
-   			var mon=new Monster(xenem,yenem);
-   			devil.push(mon);
-   		}
+  //  			var mon=new Monster(xenem,yenem);
+  //  			devil.push(mon);
+  //  		}
+
    		pacman=new pacman(0,0);
+   		devil.push(new Ghosts(redImg,cols/2*w+5,rows/2*w+5));
+   		//console.log(cols/2*w+w/2,rows/2*w+w/2);
+   		devil.push(new Ghosts(yellowImg,(cols-1)*w+5,(rows-1)*w+5));
+   		devil.push(new Ghosts(greenImg,5,(rows-1)*w+5));
+   		devil.push(new Ghosts(blueImg,(cols-1)*w+5,5));
+   		devil.push(new Ghosts(pinkImg,xenem*w+5,yenem*w+5));
+
+
+
+
 
 	   
 	current=grid[0];
@@ -149,6 +151,10 @@ function draw() {
    		
 		frameRate(2);
 		pacman.show();
+		for(var i=0;i<5;i++){
+			devil[i].show();
+			devil[i].move();
+		}
 		
    		if(direction == 1 && !current.walls[0]){
    			--yball;
@@ -188,63 +194,104 @@ function draw() {
    		
    		 current=grid[index(xball,yball)];
 
-		   for(var i=0;i<8;i++)
-		   	devil[i].show();
+		   // for(var i=0;i<8;i++)
+		   // 	devil[i].show();
 
 	  	
 
    }
 }
 
-function Monster(i,j)
+function Ghosts(img,x,y)
 {
-	this.i=i;
-	this.j=j;
-	
 
-	this.show=function(){
+	this.x=x;
+	this.y=y;
+	this.img=img;
+	this.direction=0;
+	this.i=(this.x-5)/w;
+	this.j=(this.y-5)/w;
 
-		if(xball==this.i && yball==this.j){
+	this.show=function()
+	{
+		image(img,this.x,this.y,31,32,0,0,31,32);
+	}
+
+	this.move=function()
+	{
+			if(xball==this.x && yball==this.y){
    			textSize(20);
    			textAlign(CENTER);
-   			start_angle=TWO_PI;
-   			end_angle=TWO_PI;
 			text("Game Over", 100,100,150,100);
 			noLoop();
-	}	
+		}	
 
+		
 		var chase=grid[index(this.i,this.j)];
 
-		fill(0,255,0);
-		stroke(0,255,0);
-		ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
 
 		var r1=floor(random(0,4));
+		this.direction=r1;
 	   
-	   	 if(r1==0 && !chase.walls[0])
-	   		this.j-=1;
-	   	 if(r1==1 && !chase.walls[1])
-	   		this.i+=1;
-	   	 if(r1==2 && !chase.walls[2])
-	   		this.j+=1;
-	   	 if(r1==3 && !chase.walls[3])
-	   		this.i-=1;
+	   	 if(this.direction==0 && !chase.walls[0])
+	   		this.y-=32-5;
+	   	 if(this.direction==1 && !chase.walls[1])
+	   		this.x+=31-5;
+	   	 if(this.direction==2 && !chase.walls[2])
+	   		this.y+=32-5;
+	   	 if(this.direction==3 && !chase.walls[3])
+	   		this.x-=31-5;
 
-	   	if(this.i>width-w)
-	   	this.i=width-w;
+	   	if(this.x>width-w)
+	   	this.x=width-w;
 
-	   if(this.i<0)
-	   	this.i=0;
+	   if(this.x<0)
+	   	this.x=0;
 
-	   if(this.j>height-w)
-	   		this.j=height-w;
-
-
-	   	if(this.j<0)
-	   		this.j=0;
+	   if(this.y>height-w)
+	   		this.y=height-w;
 
 
+	   	if(this.y<0)
+	   		this.y=0;
 	}
+	
+
+	// this.show=function(){
+
+	
+
+	
+	// 	// fill(0,255,0);
+	// 	// stroke(0,255,0);
+	// 	// ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
+
+	// 	var r1=floor(random(0,4));
+	   
+	//    	 if(r1==0 && !chase.walls[0])
+	//    		this.j-=1;
+	//    	 if(r1==1 && !chase.walls[1])
+	//    		this.i+=1;
+	//    	 if(r1==2 && !chase.walls[2])
+	//    		this.j+=1;
+	//    	 if(r1==3 && !chase.walls[3])
+	//    		this.i-=1;
+
+	//    	if(this.i>width-w)
+	//    	this.i=width-w;
+
+	//    if(this.i<0)
+	//    	this.i=0;
+
+	//    if(this.j>height-w)
+	//    		this.j=height-w;
+
+
+	//    	if(this.j<0)
+	//    		this.j=0;
+
+
+	// }
 
 
 	
@@ -346,9 +393,9 @@ function Cell(i,j) {
 
 		rect(x,y,w,w);
 		stroke(255);
-		fill(255);
+		fill(255,255,0);
 		if(this.draw){
-		ellipse(this.i*w+w/2,this.j*w+w/2,5,5);
+		ellipse(this.i*w+w/2,this.j*w+w/2,w/4,w/4);
 
 		}
 		
