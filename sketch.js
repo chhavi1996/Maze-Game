@@ -15,13 +15,13 @@ var mySound;
 function preload()
 {
 	mySound=loadSound('PACMAN.mp3');
-	pacmanImg=loadImage('mario.png');
-	redImg=loadImage('red.png');
-	yellowImg=loadImage('yellow.png');
-	pinkImg=loadImage('pink.png');
-	blueImg=loadImage('blue.png');
-	greenImg=loadImage('green.png');
-	weak=loadImage('weak.png');
+	pacmanImg=loadImage('images/mario.png');
+	redImg=loadImage('images/red.png');
+	yellowImg=loadImage('images/yellow.png');
+	pinkImg=loadImage('images/pink.png');
+	blueImg=loadImage('images/blue.png');
+	greenImg=loadImage('images/green.png');
+	weak=loadImage('images/weak.png');
 	
 	  
 }
