@@ -4,8 +4,8 @@ var temp = screen.height/2;
 	function moveGang(){
 		var x = document.getElementById('movingGang').offsetTop;
 		x++;
-		if(temp<0)
-			x-=2;
+		if(temp<20)
+			return;
 		document.getElementById('movingGang').style.display = "block";
 		document.getElementById('movingGang').style.top = x+'px';
 		if(temp<-30){
