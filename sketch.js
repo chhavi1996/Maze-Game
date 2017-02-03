@@ -185,7 +185,6 @@ function draw() {
 	   	if(yball<0)
 	   		yball=0;
 
-
    		
    		 current=grid[index(xball,yball)];
 
