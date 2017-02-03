@@ -1,59 +1,53 @@
 var rows,cols;
-var w=56;
-var pacman,pacmanImg;
+var w=50;
 var grid=[];
 var current,chase,chase1;
 var xball=0,yball=0;
 var xenem,yenem,xenem1,xenem2;
 var start_angle , end_angle;
 var devil=[];
-var ghostDir = 0;
+var img2;
+var img = [];
 var direction = 0; 
 var stack=[];
-var img;
+
 var mySound;
 function preload()
 {
-	mySound=loadSound('PACMAN.mp3');
-	pacmanImg=loadImage('images/mario.png');
+	// mySound=loadSound('PACMAN.mp3');
 	  
 }
-
-
 
 function keyPressed() {
 		
 	if(keyCode=== RIGHT_ARROW)
 	{
 		direction = 2;
-		
 	   start_angle =  QUARTER_PI;
 	   end_angle =  TWO_PI-QUARTER_PI;
-
+		image(img[2],this.i*w+w/2-10,this.j*w+w/2-10,img[2].width/2,img[2].height/2);
 		if(xball>width-w)
 			xball=width-w;
 	}
 
 	if(keyCode=== LEFT_ARROW)
 	{
-	   
+	   // fill(0,255,255);
 	   direction = 4;
-	   
 	   start_angle =  PI+QUARTER_PI;
 	   end_angle =  PI-QUARTER_PI;
-
+   	   image(img[4],this.i*w+w/2-10,this.j*w+w/2-10,img.width/2,img[4].height/2);
 		if(xball<0)
 			xball=0;
 	}
 
 	if(keyCode=== UP_ARROW)
 	{
-		
-		direction = 1;
-		
+		// fill(0,255,255);
+	   direction = 1;
 	   end_angle =  PI+QUARTER_PI;
 	   start_angle =  TWO_PI-QUARTER_PI;
-
+		image(img[1],this.i*w+w/2-10,this.j*w+w/2-10,img[1].width/2,img[1].height/2);
 		if(yball<0)
 			yball=0;
 		
@@ -61,12 +55,11 @@ function keyPressed() {
 
 	if(keyCode=== DOWN_ARROW)
 	{
-		
+		// fill(0,255,255);
 		direction = 3;
-		
 		start_angle =  PI-QUARTER_PI;
 	    end_angle =  QUARTER_PI;
-
+		image(img[3],this.i*w+w/2-10,this.j*w+w/2-10,img[3].width/2,img[3].height/2);
 		if(yball>height-w)
 			yball=height-w;
 		
@@ -77,8 +70,7 @@ function keyPressed() {
 }
 
 function setup() {
-	var cnv=createCanvas(672,672);
-
+	var cnv=createCanvas(650,650);
 	var x=(windowWidth-width)/2;
 	var y=(windowHeight-height)/2;
 	cnv.position(x,y);
@@ -86,12 +78,18 @@ function setup() {
 	rows=floor(height/w);
 	start_angle = QUARTER_PI;
 	end_angle = TWO_PI-QUARTER_PI;
+	img2 = loadImage("images/blinky.svg");
+   	img[1] = loadImage("images/pacmanUp.png");
 
-	
-	img = loadImage("images/blinky.svg");
+   	img[2] = loadImage("images/pacmanRight.png");
+
+   	img[3] = loadImage("images/pacmanDown.png");
+
+   	img[4] = loadImage("images/pacmanLeft.png");
+
 	//console.log(x,y,cols,rows);
-	mySound.setVolume(0.1);
-	  mySound.play();
+	// mySound.setVolume(0.1);
+	  // mySound.play();
 	for(var j=0;j<rows;j++)
 		for(var i=0;i<cols;i++)
 		{
@@ -99,44 +97,45 @@ function setup() {
 			grid.push(cell);
 		}
 
-		for(var k=0;k<8;k++)
-
+		for(var k=0;k<6;k++)
    		{
    			xenem=floor(random(0,cols));
 			yenem=floor(random(0,rows));
    			var mon=new Monster(xenem,yenem);
    			devil.push(mon);
    		}
-   		pacman=new pacman(0,0);
-
 	   
 	current=grid[0];
-
+	
+	xenem1=floor(random(0,cols));
+	yenem1=floor(random(0,rows));
+	//chase=grid[index(xenem,yenem)];
+	
+	
+	
 }
 
 function draw() {
 
 	background(51);
+	  
 
 	for(var i=0;i<grid.length;i++)
 	{
 		
 		grid[i].show();
 	}
-
   
    current.visited=true;
-   grid[0].draw=false;
 
+ // current.highlight();
 
    //Step 1
    var next=current.checkNeighbours();
    if(next)
    {
-
    		next.visited=true;
-   		
-   		
+
    		//Step 3
    		stack.push(current);
    		//Step 3
@@ -152,60 +151,40 @@ function draw() {
    else if(stack.length==0){
 
    		
-		frameRate(2);
-		pacman.show();
-		
-		frameRate(5);
-
+		frameRate(15);
    		if(direction == 1 && !current.walls[0]){
    			--yball;
-   			pacman.move(3,width,w,height);
-   			current.draw=false;
+		   // image(img[1],xball*w+w/2,yball*w+w/2,img[1].width/2,img[1].height/2);
 
+   			// yball = map(--yball,0,height,0,height/10);
    		}
    		else if(direction == 2 && !current.walls[1]){
    			++xball;
-   			pacman.move(2,width,w,height);
-   			current.draw=false;
+		   // image(img[2],xball*w+w/2,yball*w+w/2,img[2].width/2,img[2].height/2);
+
    		}
    		else if(direction == 3 && !current.walls[2]){
    			++yball;
-   			pacman.move(0,width,w,height);
-   			current.draw=false;
+		   // image(img3,xball*w+w/2,yball*w+w/2,w/2,w/2);
+
    		}
    		else if(direction == 4 && !current.walls[3]){
    			--xball;
-   			pacman.move(1,width,w,height);
-   			current.draw=false;
+		   // image(img4,xball*w+w/2,yball*w+w/2,w/2,w/2);
+
    		}
 
-   		if(xball>width-w)
-	   	xball=width-w;
-
-	   	if(xball<0)
-	   	xball=0;
-
-	   if(yball>height-w)
-	   		yball=height-w;
-
-
-	   	if(yball<0)
-	   		yball=0;
-
-   		
+   		image(img[direction],this.i*w+w/2-10,this.j*w+w/2-10,img[direction].width/2,img[direction].height/2);
+   		// fill(255,0,0);
    		 current=grid[index(xball,yball)];
+   		// chase=grid[index(xenem,yenem)];
 
-// 		   fill(0,255,255);	
-// 		   if(frameCount%2 )
-// 		   		arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
-// 		   	else if(direction==1 && !current.walls[0] || direction==2 && !current.walls[1] || direction==3 && !current.walls[2] || direction==4 && !current.walls[3])
-// 		   		arc(xball*w+w/2,yball*w+w/2,w/2,w/2,0,TWO_PI);
+		   fill(0,255,255);	
+		   // arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
 
-		   for(var i=0;i<8;i++)
+		   for(var i=0;i<6;i++)
 		   	devil[i].show();
-
 	  	
-
    }
 }
 
@@ -214,81 +193,32 @@ function Monster(i,j)
 	this.i=i;
 	this.j=j;
 	
-	function moveToPacman(){
 
-	}
 	this.show=function(){
 
 		if(xball==this.i && yball==this.j){
-   			textSize(20);
-   			textAlign(CENTER);
    			start_angle=TWO_PI;
    			end_angle=TWO_PI;
-			text("Game Over", 100,100,150,100);
+   			textSize(40);
+			// text("Game Over", width/2-100,height/2,width/2+50,height/2);
 			noLoop();
 	}	
 
 		var chase=grid[index(this.i,this.j)];
 
 		fill(0,255,0);
-		stroke(0,255,0);
-		// ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
-		image(img,this.i*w+w/2-10,this.j*w+w/2-10,img.width/3,img.height/3);
+		image(img2,this.i*w+w/2-10,this.j*w+w/2-10,img2.width/2,img2.height/2);
 		// ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
 
 		var r1=floor(random(0,4));
-	   	
-	   	// if(ghostDir==1 && !chase.walls[0] && r1!= 3){
-	   	// 	if(!chase.walls[1]){
-	   	// 		this.i++;
-	   	// 		ghostDir = 2;
-	   	// 	}
-	   	// 	else if(!chase.walls[3]){
-	   	// 		this.i--;
-	   	// 		ghostDir = 4;
-	   	// 	}
-
-	   	// }
-	   	// else if(ghostDir==2 && !chase.walls[1] && r1!= 4){
-	   	// 	if(!chase.walls[0]){
-	   	// 		this.j--;
-	   	// 		ghostDir = 1;
-	   	// 	}
-	   	// 	else if(!chase.walls[2]){
-	   	// 		this.j++;
-	   	// 		ghostDir = 3;
-	   	// 	}
-
-	   	// }
-	   	// else if(ghostDir==3 && !chase.walls[2] && r1!= 1){
-	   	// 	if(!chase.walls[1]){
-	   	// 		this.i++;
-	   	// 		ghostDir = 2;
-	   	// 	}
-	   	// 	else if(!chase.walls[3]){
-	   	// 		this.i--;
-	   	// 		ghostDir = 4;
-	   	// 	}
-
-	   	// }
-	   	// else if(ghostDir==4 && !chase.walls[0] && r1!= 3){
-	   	// 	if(!chase.walls[0]){
-	   	// 		this.j--;
-	   	// 		ghostDir = 1;
-	   	// 	}
-	   	// 	else if(!chase.walls[2]){
-	   	// 		this.j++;
-	   	// 		ghostDir = 3;
-	   	// 	}
-
-	   	// }
-	   	 if(r1==0 && !chase.walls[0] && r1!=2)
+	   
+	   	 if(r1==0 && !chase.walls[0])
 	   		this.j-=1;
-	   	 if(r1==1 && !chase.walls[1] && r1!=3)
+	   	 if(r1==1 && !chase.walls[1])
 	   		this.i+=1;
-	   	 if(r1==2 && !chase.walls[2] && r1!=0)
+	   	 if(r1==2 && !chase.walls[2])
 	   		this.j+=1;
-	   	 if(r1==3 && !chase.walls[3] && r1!=1)
+	   	 if(r1==3 && !chase.walls[3])
 	   		this.i-=1;
 
 	   	if(this.i>width-w)
@@ -300,20 +230,15 @@ function Monster(i,j)
 	   if(this.j>height-w)
 	   		this.j=height-w;
 
-
 	   	if(this.j<0)
 	   		this.j=0;
+
 
 
 	}
 
 
-	
-
-
 }
-
-
 
 function index(i,j)
 {
@@ -326,11 +251,9 @@ function index(i,j)
 function Cell(i,j) {
 	this.i=i;
 	this.j=j;
-	this.draw=true;
 	
 	this.walls=[true,true,true,true];
 	this.visited=false;
-	
 
 	this.highlight=function()
 	{
@@ -379,42 +302,29 @@ function Cell(i,j) {
 	{
 		var x=this.i*w;
 		var y=this.j*w;
-		stroke(0);
-		fill(0,0,255);
-
+		// stroke(0,160,255);
+		fill(0);
 		if(this.walls[0]){
-		
-		rect(x,y,w,5);
+			rect(x,y,w,5);
 		}
 
 		if(this.walls[1]){
-		
-		rect(x+w,y,5,w);
+			rect(x+w,y,5,w);
 		}
 
 		if(this.walls[2]){
-		
-		rect(x,y+w,w,5);
+			rect(x,y+w,w,5);
 		}
 
 		if(this.walls[3]){
-		
-		rect(x,y,5,w);
+			rect(x,y,5,w);
 		}
-		
+
 	
 		if(this.visited){
 			noStroke();
-		fill(0,0,0,145);
-
-		rect(x,y,w,w);
-		stroke(255);
-		fill(255);
-		if(this.draw){
-		ellipse(this.i*w+w/2,this.j*w+w/2,5,5);
-
-		}
-		
+			fill(0,100,0,100);
+			rect(x,y,w,w);
 		}
 	}
 }
@@ -423,25 +333,25 @@ function Cell(i,j) {
 function removeWalls(a,b)
 {
 	var x=a.i-b.i;
-	var top=grid[index(a.i,a.j-1)];
-	var left=grid[index(a.i-1,a.j)];
-
+    grid[0].walls[1]=false;
+    grid[0].walls[2]=false;
+	console.log("xa = "+b.i);
+	console.log(" xb = "+a.i);
+	noStroke();
+	fill(0,255,0);
 	if(x===1)
 	{
 		a.walls[3]=false;
 		b.walls[1]=false;
-		
 	}
 	else if(x===-1)	{
 		a.walls[1]=false;
 		b.walls[3]=false;
-		a.walls[0]=false;
-		if(top)
-			top.walls[2]=false;
 	}
 
 	var y=a.j-b.j;
-	
+	console.log("ya "+a.j);
+	console.log("yb = "+b.j);
 	if(y===1)
 	{
 		a.walls[0]=false;
@@ -451,9 +361,6 @@ function removeWalls(a,b)
 	{
 		a.walls[2]=false;
 		b.walls[0]=false;
-		a.walls[3]=false;
-		if(left)
-			left.walls[1]=false;
 	}
 
 	
