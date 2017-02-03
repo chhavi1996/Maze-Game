@@ -1,6 +1,6 @@
 var rows,cols;
-var w=40;
-
+var w=56;
+var pacman,pacmanImg;
 var grid=[];
 var current,chase,chase1;
 var xball=0,yball=0;
@@ -15,6 +15,7 @@ var mySound;
 function preload()
 {
 	mySound=loadSound('PACMAN.mp3');
+	pacmanImg=loadImage('mario.png');
 	  
 }
 
@@ -23,6 +24,7 @@ function keyPressed() {
 	if(keyCode=== RIGHT_ARROW)
 	{
 		direction = 2;
+		
 	   start_angle =  QUARTER_PI;
 	   end_angle =  TWO_PI-QUARTER_PI;
 
@@ -32,8 +34,9 @@ function keyPressed() {
 
 	if(keyCode=== LEFT_ARROW)
 	{
-	   // fill(0,255,255);
+	   
 	   direction = 4;
+	   
 	   start_angle =  PI+QUARTER_PI;
 	   end_angle =  PI-QUARTER_PI;
 
@@ -43,8 +46,9 @@ function keyPressed() {
 
 	if(keyCode=== UP_ARROW)
 	{
-		// fill(0,255,255);
+		
 		direction = 1;
+		
 	   end_angle =  PI+QUARTER_PI;
 	   start_angle =  TWO_PI-QUARTER_PI;
 
@@ -55,8 +59,9 @@ function keyPressed() {
 
 	if(keyCode=== DOWN_ARROW)
 	{
-		// fill(0,255,255);
+		
 		direction = 3;
+		
 		start_angle =  PI-QUARTER_PI;
 	    end_angle =  QUARTER_PI;
 
@@ -70,7 +75,7 @@ function keyPressed() {
 }
 
 function setup() {
-	var cnv=createCanvas(640,640);
+	var cnv=createCanvas(672,672);
 
 	var x=(windowWidth-width)/2;
 	var y=(windowHeight-height)/2;
@@ -80,7 +85,6 @@ function setup() {
 	start_angle = QUARTER_PI;
 	end_angle = TWO_PI-QUARTER_PI;
 	
-	//console.log(x,y,cols,rows);
 	mySound.setVolume(0.1);
 	  mySound.play();
 	for(var j=0;j<rows;j++)
@@ -98,13 +102,17 @@ function setup() {
    			var mon=new Monster(xenem,yenem);
    			devil.push(mon);
    		}
+   		pacman=new pacman(0,0);
+
 	   
 	current=grid[0];
+
 }
 
 function draw() {
 
 	background(51);
+
 	for(var i=0;i<grid.length;i++)
 	{
 		
@@ -113,6 +121,7 @@ function draw() {
 
   
    current.visited=true;
+   grid[0].draw=false;
 
 
    //Step 1
@@ -121,7 +130,7 @@ function draw() {
    {
 
    		next.visited=true;
-   		stroke(255);
+   		
    		
    		//Step 3
    		stack.push(current);
@@ -139,30 +148,50 @@ function draw() {
 
    		
 		frameRate(2);
-
+		pacman.show();
+		
    		if(direction == 1 && !current.walls[0]){
    			--yball;
+   			pacman.move(3,width,w,height);
+   			current.draw=false;
+
    		}
    		else if(direction == 2 && !current.walls[1]){
    			++xball;
+   			pacman.move(2,width,w,height);
+   			current.draw=false;
    		}
    		else if(direction == 3 && !current.walls[2]){
    			++yball;
+   			pacman.move(0,width,w,height);
+   			current.draw=false;
    		}
    		else if(direction == 4 && !current.walls[3]){
    			--xball;
+   			pacman.move(1,width,w,height);
+   			current.draw=false;
    		}
 
-   		
-<<<<<<< HEAD
+   		if(xball>width-w)
+	   	xball=width-w;
+
+	   	if(xball<0)
+	   	xball=0;
+
+	   if(yball>height-w)
+	   		yball=height-w;
+
+
+	   	if(yball<0)
+	   		yball=0;
+
+
    		
    		 current=grid[index(xball,yball)];
 
-		   fill(0,255,255);	
-		   arc(xball*w+w/2,yball*w+w/2,w/2,w/2,start_angle,end_angle);
-
 		   for(var i=0;i<8;i++)
 		   	devil[i].show();
+
 	  	
 
    }
@@ -188,6 +217,7 @@ function Monster(i,j)
 		var chase=grid[index(this.i,this.j)];
 
 		fill(0,255,0);
+		stroke(0,255,0);
 		ellipse(this.i*w+w/2,this.j*w+w/2,w/2,w/2);
 
 		var r1=floor(random(0,4));
@@ -218,7 +248,7 @@ function Monster(i,j)
 	}
 
 
-	}
+	
 
 
 }
@@ -234,6 +264,7 @@ function index(i,j)
 function Cell(i,j) {
 	this.i=i;
 	this.j=j;
+	this.draw=true;
 	
 	this.walls=[true,true,true,true];
 	this.visited=false;
@@ -316,7 +347,11 @@ function Cell(i,j) {
 
 		rect(x,y,w,w);
 		stroke(255);
-		ellipse(this.i*w+w/2,this.j*w+w/2,2,2);
+		fill(255);
+		if(this.draw){
+		ellipse(this.i*w+w/2,this.j*w+w/2,5,5);
+
+		}
 		
 		}
 	}
